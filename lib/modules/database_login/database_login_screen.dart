@@ -8,6 +8,8 @@ import '../../core/widgets/custom_text_field.dart';
 import '../login/login_screen.dart';
 
 class DatabaseLoginScreen extends StatelessWidget {
+  DatabaseLoginScreen({super.key});
+
   final GlobalKey<FormState> databaseFormKey = GlobalKey<FormState>();
 
   final AuthController authController = Get.find<AuthController>();
@@ -19,60 +21,84 @@ class DatabaseLoginScreen extends StatelessWidget {
     if (value == null || value.isEmpty) {
       return "${AppStrings.pleaseEnterMessage} $fieldName";
     }
-
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Form(
-          key: databaseFormKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomTextField(
-                textController: authController.urlController,
-                labelText: AppStrings.databaseUrlLabel,
-                hintText: AppStrings.databaseUrlHint,
-                validatorFunction: (value) {
-                  return requiredValidator(value, AppStrings.databaseUrlLabel);
-                },
-              ),
-              SizedBox(height: 12),
-              CustomTextField(
-                textController: authController.portController,
-                labelText: AppStrings.portLabel,
-                hintText: AppStrings.portHint,
-                validatorFunction: (value) {
-                  return null;
-                },
-              ),
-              SizedBox(height: 12),
-              CustomTextField(
-                textController: authController.databaseController,
-                labelText: AppStrings.databaseNameLabel,
-                hintText: AppStrings.databaseNameHint,
-                validatorFunction: (value) {
-                  return requiredValidator(value, AppStrings.databaseNameLabel);
-                },
-              ),
-              SizedBox(height: 20),
-              Obx(() {
-                return CustomButton(
-                  onPress: () {
-                    if (databaseFormKey.currentState!.validate()) {
-                      Get.to(() => LoginScreen());
-                    }
+      appBar: AppBar(
+        title: Text(
+          AppStrings.databaseLoginTitle,
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Form(
+            key: databaseFormKey,
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  AppStrings.connectDatabaseTitle,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 30),
+                CustomTextField(
+                  textController: authController.urlController,
+                  labelText: AppStrings.databaseUrlLabel,
+                  hintText: AppStrings.databaseUrlHint,
+                  validatorFunction: (value) {
+                    return requiredValidator(
+                      value,
+                      AppStrings.databaseUrlLabel,
+                    );
                   },
-                  buttonText: AppStrings.continueButtonText,
-                  opacityValue:
-                      authController.databaseFormValid.value ? 1 : 0.4,
-                );
-              }),
-            ],
+                ),
+                SizedBox(height: 16),
+                CustomTextField(
+                  textController: authController.portController,
+                  labelText: AppStrings.portLabel,
+                  hintText: AppStrings.portHint,
+                  keyboardType: TextInputType.number,
+                  validatorFunction: (value) {
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                CustomTextField(
+                  textController: authController.databaseController,
+                  labelText: AppStrings.databaseNameLabel,
+                  hintText: AppStrings.databaseNameHint,
+                  validatorFunction: (value) {
+                    return requiredValidator(
+                      value,
+                      AppStrings.databaseNameLabel,
+                    );
+                  },
+                ),
+                Spacer(),
+                Obx(() {
+                  return CustomButton(
+                    onPress: () {
+                      if (databaseFormKey.currentState!.validate()) {
+                        Get.to(
+                          () => LoginScreen(),
+                        );
+                      }
+                    },
+                    buttonText: AppStrings.continueButtonText,
+                    isEnabled: authController.databaseFormValid.value,
+                  );
+                }),
+                SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),

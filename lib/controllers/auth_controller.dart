@@ -12,24 +12,38 @@ class AuthController extends GetxController {
   RxBool databaseFormValid = false.obs;
   RxBool loginFormValid = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+
+    urlController.addListener(validateDatabaseForm);
+    databaseController.addListener(validateDatabaseForm);
+
+    usernameController.addListener(validateLoginForm);
+    passwordController.addListener(validateLoginForm);
+  }
+
   void validateDatabaseForm() {
-    if (urlController.text.isNotEmpty && databaseController.text.isNotEmpty) {
-      databaseFormValid.value = true;
-    } else {
-      databaseFormValid.value = false;
-    }
+    databaseFormValid.value =
+        urlController.text.isNotEmpty && databaseController.text.isNotEmpty;
   }
 
   void validateLoginForm() {
-    if (usernameController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty) {
-      loginFormValid.value = true;
-    } else {
-      loginFormValid.value = false;
-    }
+    loginFormValid.value = usernameController.text.isNotEmpty &&
+        passwordController.text.isNotEmpty;
   }
 
   void toggleRememberMe(bool value) {
     rememberMeValue.value = value;
+  }
+
+  @override
+  void onClose() {
+    urlController.dispose();
+    portController.dispose();
+    databaseController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+    super.onClose();
   }
 }

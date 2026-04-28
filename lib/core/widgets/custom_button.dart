@@ -1,31 +1,43 @@
 import 'package:flutter/material.dart';
-
 import '../constants/app_colors.dart';
 
 class CustomButton extends StatelessWidget {
-  final VoidCallback onPress;
-
+  final VoidCallback? onPress;
   final String buttonText;
+  final bool isEnabled;
 
-  final double opacityValue;
-
-  CustomButton({
+  const CustomButton({
+    super.key,
     required this.onPress,
     required this.buttonText,
-    required this.opacityValue,
+    required this.isEnabled,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(
-      opacity: opacityValue,
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
       child: ElevatedButton(
-        onPressed: opacityValue == 1 ? onPress : null,
+        onPressed: isEnabled ? onPress : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryColor,
-          minimumSize: Size(double.infinity, 50),
+          backgroundColor: isEnabled
+              ? AppColors.primaryColor
+              : AppColors.disabledButtonColor,
+          disabledBackgroundColor: AppColors.disabledButtonColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          elevation: isEnabled ? 2 : 0,
         ),
-        child: Text(buttonText),
+        child: Text(
+          buttonText,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.whiteColor,
+          ),
+        ),
       ),
     );
   }

@@ -7,6 +7,8 @@ import '../../core/constants/app_strings.dart';
 import '../../core/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatelessWidget {
+  LoginScreen({super.key});
+
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
 
   final AuthController authController = Get.find<AuthController>();
@@ -18,61 +20,96 @@ class LoginScreen extends StatelessWidget {
     if (value == null || value.isEmpty) {
       return "${AppStrings.pleaseEnterMessage} $fieldName";
     }
-
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Form(
-          key: loginFormKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomTextField(
-                textController: authController.usernameController,
-                labelText: AppStrings.usernameLabel,
-                hintText: AppStrings.usernameHint,
-                validatorFunction: (value) {
-                  return requiredValidator(value, AppStrings.usernameLabel);
-                },
-              ),
-              SizedBox(height: 12),
-              CustomTextField(
-                textController: authController.passwordController,
-                labelText: AppStrings.passwordLabel,
-                hintText: AppStrings.passwordHint,
-                validatorFunction: (value) {
-                  return requiredValidator(value, AppStrings.passwordLabel);
-                },
-                isPassword: true,
-              ),
-              SizedBox(height: 12),
-              Obx(() {
-                return CheckboxListTile(
-                  title: Text(AppStrings.rememberMeText),
-                  value: authController.rememberMeValue.value,
-                  onChanged: (value) {
-                    authController.toggleRememberMe(value ?? false);
+      appBar: AppBar(
+        title: Text(
+          AppStrings.loginTitle,
+        ),
+        centerTitle: true,
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Form(
+            key: loginFormKey,
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Text(
+                  AppStrings.welcomeBackTitle,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 30),
+                CustomTextField(
+                  textController: authController.usernameController,
+                  labelText: AppStrings.usernameLabel,
+                  hintText: AppStrings.usernameHint,
+                  validatorFunction: (value) {
+                    return requiredValidator(
+                      value,
+                      AppStrings.usernameLabel,
+                    );
                   },
-                );
-              }),
-              SizedBox(height: 20),
-              Obx(() {
-                return CustomButton(
-                  onPress: () {
-                    if (loginFormKey.currentState!.validate()) {
-                      print("Login Success");
-                    }
+                ),
+                SizedBox(height: 16),
+                CustomTextField(
+                  textController: authController.passwordController,
+                  labelText: AppStrings.passwordLabel,
+                  hintText: AppStrings.passwordHint,
+                  isPassword: true,
+                  validatorFunction: (value) {
+                    return requiredValidator(
+                      value,
+                      AppStrings.passwordLabel,
+                    );
                   },
-                  buttonText: AppStrings.submitButtonText,
-                  opacityValue: authController.loginFormValid.value ? 1 : 0.4,
-                );
-              }),
-            ],
+                ),
+                Obx(() {
+                  return CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    visualDensity: VisualDensity(
+                      horizontal: -4,
+                      vertical: -4,
+                    ),
+                    title: Text(
+                      AppStrings.rememberMeText,
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                    controlAffinity: ListTileControlAffinity.leading,
+                    value: authController.rememberMeValue.value,
+                    onChanged: (value) {
+                      authController.toggleRememberMe(
+                        value ?? false,
+                      );
+                    },
+                  );
+                }),
+                Spacer(),
+                Obx(() {
+                  return CustomButton(
+                    onPress: () {
+                      if (loginFormKey.currentState!.validate()) {
+                        print("Login Success");
+                      }
+                    },
+                    buttonText: AppStrings.submitButtonText,
+                    isEnabled: authController.loginFormValid.value,
+                  );
+                }),
+                SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
